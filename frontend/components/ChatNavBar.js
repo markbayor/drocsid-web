@@ -1,5 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Menu } from 'antd';
+import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
+
+const { SubMenu } = Menu;
 
 const ChatsNavbar = ({ handleClick, isLoggedIn }) => (
   <div>

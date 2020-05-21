@@ -1,7 +1,12 @@
 const router = require('express').Router()
 module.exports = router
 
-const { addFriend, searchUser, acceptFriendRequest, rejectFriendRequest, deleteFriend } = require('./controllers/friends')
+const { addFriend, getUserFriends, getUserFriendRequests, searchUser, acceptFriendRequest, rejectFriendRequest, deleteFriend } = require('./controllers/friends')
+
+router.get('/', getUserFriends)
+
+// req.user.id must be present
+router.get('/requests', getUserFriendRequests)
 
 // must send searchVal on req.body
 router.post('/search', searchUser)
@@ -16,5 +21,5 @@ router.post('/accept', acceptFriendRequest)
 router.delete('/reject', rejectFriendRequest)
 
 // must send friendId in req.body
-route.delete('/delete', deleteFriend)
+router.delete('/delete', deleteFriend)
 

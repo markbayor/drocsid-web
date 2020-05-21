@@ -23,6 +23,9 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
+    "@ant-design/colors": "^4.0.0",
+    "@ant-design/icons": "^4.1.0",
+    "antd": "^4.2.4",
     "axios": "^0.19.2",
     "connect-session-sequelize": "^6.1.1",
     "dotenv": "^8.2.0",

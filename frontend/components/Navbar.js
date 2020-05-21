@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { logout } from '../store'
-import { Login, Signup } from './Authform'
+import { LoginForm } from './LoginForm'
+import { SignupForm } from './SingupForm'
+
 
 
 const Navbar = ({ handleClick, isLoggedIn, tst }) => {
@@ -10,9 +12,8 @@ const Navbar = ({ handleClick, isLoggedIn, tst }) => {
 
   return (
     <div>
-      <h1>BOILERMAKER</h1>
+      <h1>DROCSID</h1>
       <nav>
-
         <div>
           {isLoggedIn ? (
             <div>
@@ -28,12 +29,12 @@ const Navbar = ({ handleClick, isLoggedIn, tst }) => {
                   setShowLoginForm(!showLoginForm)
                   setShowSignUpForm(false)
                 }}>Log in</h2>
-                {showLoginForm && <Login />}
+                {showLoginForm && <LoginForm />}
                 <h2 onClick={() => {
                   setShowSignUpForm(!showSignUpForm)
                   setShowLoginForm(false)
                 }}>Sign Up</h2>
-                {showSignUpForm && <Signup />}
+                {showSignUpForm && <SignupForm />}
               </div>
             )}
         </div>

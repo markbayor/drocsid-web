@@ -40,6 +40,7 @@ async function seed() {
   // REJECT FUNCTION WILL DELETE BOTH RELATIONS ALTOGETHER
   // DELETE FRIEND FUNCTION WILL DO THE SAME
 
+
   const testFindFriends = await User.findOne({ where: { id: user1.id }, include: [{ model: User, as: 'friend' }] })
 
 

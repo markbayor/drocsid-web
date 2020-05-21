@@ -9,7 +9,8 @@ export const Home = props => {
 
   return (
     <div>
-      <h3>Welcome, {email}</h3>
+      <h2>Welcome, {email}</h2>
+      <h3>Go to your chatpage to start chatting with people!!!</h3>
     </div>
   )
 }

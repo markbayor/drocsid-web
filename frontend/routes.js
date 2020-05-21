@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter, Route, Switch, Redirect } from 'react-router-dom'
 
-import { Home } from './pages'
-import { Navbar } from './components'
+import { Home, ChatsPage } from './pages'
 import { me } from './store'
 
 class Routes extends Component {
@@ -15,13 +14,20 @@ class Routes extends Component {
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
+        {
+          isLoggedIn ?
+            <Route exact path="/">
+              <Redirect to="/chats" />
+            </Route> :
+            <Route exact path="/">
+              <Redirect to="/home" />
+            </Route>
+        }
         <Route path="/home" component={Home} />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
+            <Route path='/chats' component={ChatsPage} />
             { /*<Route path="/admin" component={AdminPage} />
         <Route path="/account" component={AccountPage} /> */ }
           </Switch>
