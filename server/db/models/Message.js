@@ -14,7 +14,7 @@ const Message = db.define('message', {
     validate: {
       notEmpty: true
     }
-  }
+  },
 })
 
 module.exports = Message

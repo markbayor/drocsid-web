@@ -8,6 +8,14 @@ const Chat = db.define('chat', {
     defaultValue: UUIDV4,
     primaryKey: true
   },
+  name: {
+    type: STRING,
+    allowNull: true
+  },
+  userIds: {
+    type: STRING,
+    allowNull: true, //TODO
+  }
 })
 
 module.exports = Chat

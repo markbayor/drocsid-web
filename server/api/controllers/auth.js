@@ -1,6 +1,6 @@
-const User = require('../db/models/user')
+const User = require('../../db/models/user')
 
-export const loginUser = async (req, res, next) => {
+const loginUser = async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { email: req.body.email } })
     if (!user) {
@@ -17,7 +17,7 @@ export const loginUser = async (req, res, next) => {
   }
 }
 
-export const signUpUser = async (req, res, next) => {
+const signUpUser = async (req, res, next) => {
   try {
     const { email, password } = req.body
     const user = await User.create(email, password)
@@ -34,7 +34,7 @@ export const signUpUser = async (req, res, next) => {
   }
 }
 
-export const logOutUser = async (req, res, next) => {
+const logOutUser = async (req, res, next) => {
   try {
     req.logout()
     req.session.destroy()
@@ -45,11 +45,18 @@ export const logOutUser = async (req, res, next) => {
   }
 }
 
-export const getMe = async (req, res, next) => {
+const getMe = async (req, res, next) => {
   try {
     res.json(req.user)
   } catch (ex) {
     console.log(ex)
     next(ex)
   }
+}
+
+module.exports = {
+  loginUser,
+  signUpUser,
+  logOutUser,
+  getMe
 }

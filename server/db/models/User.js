@@ -34,7 +34,8 @@ const User = db.define('user', {
   },
   username: {
     type: STRING,
-    allowNull: true
+    unique: true,
+    allowNull: false
   },
   googleId: {
     type: STRING,

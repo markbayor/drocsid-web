@@ -2,19 +2,23 @@ const User = require('./user')
 const Message = require('./Message')
 const Chat = require('./Chat')
 const ChatsUsers = require('./Chats_users')
-const ChatsMessages = require('./Chats_messages')
+const Friendship = require('./Friendship')
 
 User.belongsToMany(Chat, { through: ChatsUsers })
 Chat.belongsToMany(User, { through: ChatsUsers })
 
-Message.belongsToMany(Chat, { through: ChatsMessages })
-Chat.belongsToMany(Message, { through: ChatsMessages })
+User.hasMany(Message)
+Message.belongsTo(User)
 
+Chat.hasMany(Message)
+Message.belongsTo(Chat)
+
+User.belongsToMany(User, { through: Friendship, as: 'friend' })
 
 module.exports = {
   User,
   Message,
   Chat,
   ChatsUsers,
-  ChatsMessages
+  Friendship
 }

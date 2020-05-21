@@ -2,11 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter, Route, Switch, Redirect } from 'react-router-dom'
 
-import {
-  Login,
-  Signup,
-  Home,
-} from './components'
+import { Home } from './pages'
+import { Navbar } from './components'
 import { me } from './store'
 
 class Routes extends Component {
@@ -21,8 +18,6 @@ class Routes extends Component {
         <Route exact path="/">
           <Redirect to="/home" />
         </Route>
-        <Route path="/login" component={Login} />
-        <Route path="/signup" component={Signup} />
         <Route path="/home" component={Home} />
         {isLoggedIn && (
           <Switch>
@@ -32,7 +27,7 @@ class Routes extends Component {
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}
-        <Route component={Login} />
+        {/* <Route component={Login} /> */}
       </Switch>
     )
   }
