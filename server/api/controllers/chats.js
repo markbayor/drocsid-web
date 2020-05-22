@@ -15,7 +15,7 @@ const adminGetAllChats = async (req, res, next) => {
 
 const getUserChats = async (req, res, next) => {
   try {
-    const myChats = await Chat.findAll({ where: { userIds: { [Op.iLike]: `%${req.user.id}%` } } })
+    const myChats = await Chat.findAll({ where: { userIds: { [Op.iLike]: `%${req.user.id}%` } }, include: [User] })
     let copy = myChats.slice()
     copy = copy.sort((a, b) => a.updatedAt - b.updatedAt)
     res.status(200).json(copy)
@@ -27,7 +27,7 @@ const getUserChats = async (req, res, next) => {
 
 const getUserChatsWithMessages = async (req, res, next) => {
   try {
-    const myChats = await Chat.findAll({ where: { userIds: { [Op.iLike]: `%${req.user.id}%` } }, include: [{ model: Message, limit: 50 }] }) //TODO ADD OFFSET TO GET OLDER MESSAGES
+    const myChats = await Chat.findAll({ where: { userIds: { [Op.iLike]: `%${req.user.id}%` } }, include: [{ model: Message, limit: 50 }, { model: User }] }) //TODO ADD OFFSET TO GET OLDER MESSAGES
     let copy = myChats.slice()
     // SORTING MESSAGES HERE... NOT GOOD. TODO.
     copy.forEach(chat => chat.messages = chat.messages.sort((a, b) => a.updatedAt - b.updatedAt))
@@ -38,20 +38,22 @@ const getUserChatsWithMessages = async (req, res, next) => {
   }
 }
 
-const getSingleChatWithMessages = async (req, res, next) => {
+const getTwoPersonChatWithMessages = async (req, res, next) => {
   try {
-    if (req.body.userId || req.body.partnerId) {
+    if (req.body.chatId) {
+      const chat = await Chat.findOne({ where: { id: req.body.chatId }, include: [{ model: Message, limit: 50, include: [{ model: User, attributes: ['username'] }] }, User] })
+      chat.messages = chat.messages.sort((a, b) => a.createdAt - b.createdAt)
+      res.json(chat)
+    } else if (req.body.userId || req.body.partnerId) { //THIS PROBABLY WONT BE USED BUT JUST IN CASE
       const userId = req.body.id
       const partnerId = req.body.partnerId;
-      const chat = await Chat.findOne({ where: { userIds: `${[userId, partnerId].sort().join('::')}` }, include: [{ model: Message, limit: 50 }] })
+      const chat = await Chat.findOne({ where: { userIds: `${[userId, partnerId].sort().join('::')}` }, include: [{ model: Message, limit: 50, include: [{ model: User, attributes: ['username'] }] }, User] })
       // SORTS THEM HERE, GOTTA LOOK INTO IT WITH SOME SEQUELIZE METHOD 
       // TODO
       chat.messages = chat.messages.sort((a, b) => a.createdAt - b.createdAt)
       res.json(chat)
-    } else if (req.body.chatId) {
-      const chat = await Chat.findOne({ where: { id: req.body.chatId }, include: [Message] })
-      chat.messages = chat.messages.sort((a, b) => a.createdAt - b.createdAt)
-      res.json(chat)
+
+
     }
   } catch (ex) {
     console.log(ex)
@@ -139,7 +141,7 @@ module.exports = {
   getUserChatsWithMessages,
   createTwoPersonChat,
   createGroupChat,
-  getSingleChatWithMessages,
+  getTwoPersonChatWithMessages,
   addUserToGroupChat,
   removeUserFromGroupChat
 }

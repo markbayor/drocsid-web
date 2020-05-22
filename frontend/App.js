@@ -11,8 +11,8 @@ const { Header, Content, Footer, Sider } = Layout;
 const App = () => {
   return (
     <Layout>
-      <Header><Navbar /></Header>
-      <Layout>
+      <Navbar />
+      <Layout style={{ marginTop: 62 }}>
         <Routes />
       </Layout>
     </Layout>

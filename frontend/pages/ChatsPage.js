@@ -10,7 +10,7 @@ import { ChatsNavbar, ChatComponent } from '../components'
 import { Layout, Menu } from 'antd';
 
 const { Header, Content, Footer, Sider } = Layout;
-const { SubMenu } = Menu
+
 
 const _ChatsPage = props => {
 
@@ -19,10 +19,8 @@ const _ChatsPage = props => {
   }, [])
   return (
     <Layout>
-      <Sider><ChatsNavbar /></Sider>
-      <Content>
-        {/*<ChatComponent chat={props.single_chat || null} /> */}
-      </Content>
+      <ChatsNavbar />
+      <ChatComponent single_chat={props.single_chat || null} />
     </Layout>
   )
 }

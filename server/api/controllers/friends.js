@@ -8,8 +8,10 @@ const getUserFriends = async (req, res, next) => {
     //ONLY SEND BACK USERNAME EMAIL AND ID FOR EACH FRIEND IN REQUEST
     const friends = (await User.findOne({ where: { id: req.user.id }, include: [{ model: User, as: 'friend', attributes: ['id', 'email', 'username'] }] })).friend
     const response = friends.filter(friend => friend.friendship.confirmed === true)
-    console.log('FRIEEEENDS', response)
-    res.status(200).json(friends)
+    res.status(200).json(response)
+
+    //testing
+    // const related = (await User.findOne({ where: { id: req.user.id }, include: [{ model: Friendship, where: { confirmed: true }, include: [{ model: User, as: 'friend', attributes: ['id', 'email', 'username'] }] }] })).friend
   } catch (ex) {
     console.log(ex)
     next(ex)
@@ -22,7 +24,6 @@ const getUserFriendRequests = async (req, res, next) => {
     const friends = (await User.findOne({ where: { id: req.user.id }, include: [{ model: User, as: 'friend', attributes: ['id', 'email', 'username'] }] })).friend
     const incomingRequests = friends.filter(friend => friend.friendship.confirmed === false && friend.friendship.requesterId !== req.user.id)
     const sentRequests = friends.filter(friend => friend.friendship.confirmed === false && friend.friendship.requesterId === req.user.id)
-    console.log('REQUEEEESTS', incomingRequests, sentRequests)
     res.status(200).json({ incomingRequests, sentRequests })
   } catch (ex) {
     console.log(ex)

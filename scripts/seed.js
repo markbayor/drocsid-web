@@ -14,7 +14,7 @@ async function seed() {
   await db.sync({ force: true })
   console.log('db synced!')
 
-  const [user1, user2, user3, user4, user5, user6, user7, user8, user9, user10] = await Promise.all([
+  const [user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11, user12] = await Promise.all([
     User.create({
       email: 'admin@gmail.com',
       password: 'admin',
@@ -44,14 +44,14 @@ async function seed() {
   // DELETE FRIEND FUNCTION WILL DO THE SAME
   const friendship1 = await Friendship.create({ userId: user1.id, friendId: user2.id, requesterId: user1.id })
   const friendship1reverse = await Friendship.create({ userId: user2.id, friendId: user1.id, requesterId: user1.id })
-  await Friendship.create({ userId: user1.id, friendId: user3.id, requesterId: user1.id, confirmed: true })
-  await Friendship.create({ userId: user3.id, friendId: user1.id, requesterId: user1.id, confirmed: true })
+  await Friendship.create({ userId: user1.id, friendId: user3.id, requesterId: user3.id, confirmed: true })
+  await Friendship.create({ userId: user3.id, friendId: user1.id, requesterId: user3.id, confirmed: true })
   await Friendship.create({ userId: user1.id, friendId: user4.id, requesterId: user1.id, confirmed: true })
   await Friendship.create({ userId: user4.id, friendId: user1.id, requesterId: user1.id, confirmed: true })
   await Friendship.create({ userId: user1.id, friendId: user5.id, requesterId: user1.id, confirmed: true })
   await Friendship.create({ userId: user5.id, friendId: user1.id, requesterId: user1.id, confirmed: true })
   await Friendship.create({ userId: user1.id, friendId: user6.id, requesterId: user1.id, confirmed: true })
-  await Friendship.create({ userId: user6.id, friendId: user1.id, requesterId: user1.id, confirmedd: true })
+  await Friendship.create({ userId: user6.id, friendId: user1.id, requesterId: user1.id, confirmed: true })
   await Friendship.create({ userId: user1.id, friendId: user7.id, requesterId: user1.id, confirmed: true })
   await Friendship.create({ userId: user7.id, friendId: user1.id, requesterId: user1.id, confirmed: true })
   await Friendship.create({ userId: user1.id, friendId: user8.id, requesterId: user8.id, confirmed: false })
@@ -60,14 +60,23 @@ async function seed() {
   await Friendship.create({ userId: user9.id, friendId: user1.id, requesterId: user9.id, confirmed: false })
   await Friendship.create({ userId: user1.id, friendId: user10.id, requesterId: user10.id, confirmed: false })
   await Friendship.create({ userId: user10.id, friendId: user1.id, requesterId: user10.id, confirmed: false })
+  await Friendship.create({ userId: user1.id, friendId: user11.id, requesterId: user11.id, confirmed: false })
+  await Friendship.create({ userId: user11.id, friendId: user1.id, requesterId: user11.id, confirmed: false })
+  await Friendship.create({ userId: user1.id, friendId: user12.id, requesterId: user12.id, confirmed: false })
+  await Friendship.create({ userId: user12.id, friendId: user1.id, requesterId: user12.id, confirmed: false })
 
   const chat = await Chat.create({ name: 'chat1' })
+  const chat2 = await Chat.create({ name: 'chat2' })
+  const chat3 = await Chat.create({ name: 'chat3' })
+  const chat4 = await Chat.create({ name: 'chat4' })
+  const groupchat1 = await Chat.create({ name: 'groupchat1' })
 
   const addUserToChat = async (chat, newUser) => {
     chat.addUser(newUser) //add to join table 
     // if (chat.userIds) {
     if (chat.userIds && chat.userIds.length) {
       const newIds = (`${chat.userIds}::${newUser.id}`).split('::').sort().join('::')
+
       await chat.update({ userIds: newIds }) //case if there is one or more partners already
       // add to actual userIds array
       // }
@@ -76,11 +85,22 @@ async function seed() {
       // add the first userId ever in the chat
     }
   }
-
   await addUserToChat(chat, user1)
   await addUserToChat(chat, user2)
-  await addUserToChat(chat, user3)
+  await addUserToChat(chat2, user1)
+  await addUserToChat(chat2, user3)
+  await addUserToChat(chat3, user1)
+  await addUserToChat(chat3, user4)
+  await addUserToChat(chat4, user1)
+  await addUserToChat(chat4, user5)
+  await addUserToChat(groupchat1, user1)
+  await addUserToChat(groupchat1, user2)
+  await addUserToChat(groupchat1, user3)
+  await addUserToChat(groupchat1, user4)
 
+
+  const result = await Chat.findOne({ where: { id: chat.id }, include: [User] })
+  console.log('RESULT', result)
   // const getChatWithMultipleUsers = async (idsArr) => {
   //   const sorted = idsArr.sort().join('::')
   //   console.log('SORTED', sorted)

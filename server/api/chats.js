@@ -5,7 +5,7 @@ const { isAdmin } = require('../middleware')
 const {
   adminGetAllChats,
   getUserChats,
-  getSingleChatWithMessages,
+  getTwoPersonChatWithMessages,
   createTwoPersonChat,
   createGroupChat,
   getUserChatsWithMessages,
@@ -22,8 +22,8 @@ router.get('/all', getUserChats)
 // must pass in req.user.id
 router.get('/all/populated', getUserChatsWithMessages)
 
-// must pass in req.user.id and req.body.partnerId OR just chatId
-router.get('/single/populated', getSingleChatWithMessages) // WILL ALSO WORK FOR GROUPCHATS WITH chatId TODO
+// IS REALLY A GET BUT WHATEVER must pass in req.user.id and req.body.partnerId OR just chatId
+router.post('/single/populated', getTwoPersonChatWithMessages) // WILL ALSO WORK FOR GROUPCHATS WITH chatId TODO
 
 // create a new single chat with one other person. must pass in partnerId and req.user.id
 router.post('/new', createTwoPersonChat)
