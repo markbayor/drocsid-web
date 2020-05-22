@@ -27,7 +27,7 @@ const getUserChats = async (req, res, next) => {
 
 const getUserChatsWithMessages = async (req, res, next) => {
   try {
-    const myChats = await Chat.findAll({ where: { userIds: { [Op.iLike]: `%${req.user.id}%` } }, include: [Message] })
+    const myChats = await Chat.findAll({ where: { userIds: { [Op.iLike]: `%${req.user.id}%` } }, include: [{ model: Message, limit: 50 }] }) //TODO ADD OFFSET TO GET OLDER MESSAGES
     let copy = myChats.slice()
     // SORTING MESSAGES HERE... NOT GOOD. TODO.
     copy.forEach(chat => chat.messages = chat.messages.sort((a, b) => a.updatedAt - b.updatedAt))
@@ -43,7 +43,7 @@ const getSingleChatWithMessages = async (req, res, next) => {
     if (req.body.userId || req.body.partnerId) {
       const userId = req.body.id
       const partnerId = req.body.partnerId;
-      const chat = await Chat.findOne({ where: { userIds: `${[userId, partnerId].sort().join('::')}` }, include: [Message] })
+      const chat = await Chat.findOne({ where: { userIds: `${[userId, partnerId].sort().join('::')}` }, include: [{ model: Message, limit: 50 }] })
       // SORTS THEM HERE, GOTTA LOOK INTO IT WITH SOME SEQUELIZE METHOD 
       // TODO
       chat.messages = chat.messages.sort((a, b) => a.createdAt - b.createdAt)
@@ -99,7 +99,7 @@ const addUserToGroupChat = async (req, res, next) => {
   try {
     const { chatId, userId } = req.body
     const chat = await Chat.findByPk(chatId)
-    const user = await User.findByPk(userId)
+    const user = await User.findOne({ where: { id: userId }, attributes: ['id', 'email', 'username'] })
 
     await chat.addUser(user)
 
@@ -140,7 +140,6 @@ module.exports = {
   createTwoPersonChat,
   createGroupChat,
   getSingleChatWithMessages,
-  // sendNewChat,
   addUserToGroupChat,
   removeUserFromGroupChat
 }

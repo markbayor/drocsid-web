@@ -4,10 +4,14 @@ import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import user from './user'
 import chats from './chats'
+import friends from './friends'
+import single_chat from './single_chat'
 
 const reducer = combineReducers({
   user,
-  chats
+  chats,
+  friends,
+  single_chat
 })
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))

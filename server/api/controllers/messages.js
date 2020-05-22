@@ -4,12 +4,12 @@ const { Op } = require('sequelize')
 //must send req.user.id, chatId and text (content) in req.body
 const sendMessage = async (req, res, next) => {
   try {
-    const chatId = req.body.chatId; //get the chat where the message was written
-    //create the message with the text and with the id of the user that made it, and attach it to the chat through chatId
+    const chatId = req.body.chatId; // get the chat where the message was written
+    // create the message with the text and with the id of the user that made it, and attach it to the chat through chatId
     const message = await Message.create({ userId: req.user.id, chatId, text: req.body.text })
-    //save relation for easier retrieval later (?) TODO
+    // save relation for easier retrieval later (?) TODO
     // await ChatsMessages.create({ chatId, messageId: message.id, senderId: req.user.id })
-    //send back message to handle in frontend or socke or whatever
+    // send back message to handle in frontend or socket or whatever
     res.status(200).json(message)
   } catch (ex) {
     console.log(ex)

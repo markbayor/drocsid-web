@@ -4,49 +4,40 @@ import { logout } from '../store'
 import { LoginForm } from './LoginForm'
 import { SignupForm } from './SingupForm'
 
+import { Popover, Layout, Menu, Button } from 'antd';
+const { Header, Content, Footer, Sider } = Layout;
 
-
-const Navbar = ({ handleClick, isLoggedIn, tst }) => {
+const Navbar = ({ handleClick, isLoggedIn, loaded }) => {
   const [showLoginForm, setShowLoginForm] = useState(false)
-  const [showSignUpForm, setShowSignUpForm] = useState(false)
+  const [showSignupForm, setShowSignupForm] = useState(false)
+
+  function handleVisibleChangeLogin(visible) {
+    setShowLoginForm(visible)
+  }
+  function handleVisibleChangeSignup(visible) {
+    setShowSignupForm(visible)
+  }
 
   return (
-    <div>
-      <h1>DROCSID</h1>
-      <nav>
-        <div>
-          {isLoggedIn ? (
-            <div>
-              {/* The navbar will show these links after you log in */}
-              <a href="#" onClick={handleClick}>
-                Logout
-          </a>
-            </div>
-          ) : (
-              <div>
-                {/* The navbar will show these links before you log in */}
-                <h2 onClick={() => {
-                  setShowLoginForm(!showLoginForm)
-                  setShowSignUpForm(false)
-                }}>Log in</h2>
-                {showLoginForm && <LoginForm />}
-                <h2 onClick={() => {
-                  setShowSignUpForm(!showSignUpForm)
-                  setShowLoginForm(false)
-                }}>Sign Up</h2>
-                {showSignUpForm && <SignupForm />}
-              </div>
-            )}
-        </div>
-      </nav>
-
-      <hr />
-    </div>
+    <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+      {isLoggedIn && <Button type="primary" href='/chats'>Go to Chats</Button>}
+      {!isLoggedIn &&
+        <Popover trigger='click' visible={showLoginForm} content={<LoginForm />} title='login' onVisibleChange={handleVisibleChangeLogin}>
+          <Button type="primary" onClick={() => setShowLoginForm(!showLoginForm)}>Log in</Button>
+        </Popover>
+      }
+      {!isLoggedIn &&
+        <Popover trigger='click' visible={showSignupForm} content={<SignupForm />} title='login' onVisibleChange={handleVisibleChangeSignup}>
+          <Button type="primary" onClick={() => setShowSignupForm(!showSignupForm)}>Sign up</Button>
+        </Popover>
+      }
+      {isLoggedIn && <Button type="primary" onClick={handleClick}>Log out</Button>}
+    </Header>
   )
 }
 const mapState = state => {
   return {
-    isLoggedIn: !!state.user.email
+    isLoggedIn: !!state.user.email,
   }
 }
 
@@ -54,9 +45,6 @@ const mapDispatch = dispatch => {
   return {
     handleClick() {
       dispatch(logout())
-    },
-    tst() {
-      dispatch(test())
     }
   }
 }

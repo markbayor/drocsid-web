@@ -6,6 +6,9 @@ const Friendship = db.define('friendship', {
   confirmed: {
     type: BOOLEAN,
     defaultValue: false
+  },
+  requesterId: {
+    type: UUID
   }
 })
 

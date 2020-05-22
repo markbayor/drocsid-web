@@ -14,7 +14,7 @@ async function seed() {
   await db.sync({ force: true })
   console.log('db synced!')
 
-  const [user1, user2, user3] = await Promise.all([
+  const [user1, user2, user3, user4, user5, user6, user7, user8, user9, user10] = await Promise.all([
     User.create({
       email: 'admin@gmail.com',
       password: 'admin',
@@ -26,27 +26,41 @@ async function seed() {
       username: 'murphy',
       password: '123'
     }),
-    User.create({
-      email: 'cunt@gmail.com',
-      username: 'cunt',
-      password: '123'
-    })
+    User.create({ email: 'cunt1@gmail.com', username: 'cunt1', password: '123' }),
+    User.create({ email: 'cunt2@gmail.com', username: 'cunt2', password: '123' }),
+    User.create({ email: 'cunt3@gmail.com', username: 'cunt3', password: '123' }),
+    User.create({ email: 'cunt4@gmail.com', username: 'cunt4', password: '123' }),
+    User.create({ email: 'cunt5@gmail.com', username: 'cunt5', password: '123' }),
+    User.create({ email: 'cunt6@gmail.com', username: 'cunt6', password: '123' }),
+    User.create({ email: 'cunt7@gmail.com', username: 'cunt7', password: '123' }),
+    User.create({ email: 'cunt8@gmail.com', username: 'cunt8', password: '123' }),
+    User.create({ email: 'cunt9@gmail.com', username: 'cunt9', password: '123' }),
+    User.create({ email: 'cunt10@gmail.com', username: 'cunt10', password: '123' }),
   ])
 
   // TO ADD FRIENDS MAKE BOTH RELATIONS WHEN ONE USER ADDS THE OTHER
-  const friendship1 = await Friendship.create({ userId: user1.id, friendId: user2.id })
-  const friendship1reverse = await Friendship.create({ userId: user2.id, friendId: user1.id })
   // ACCEPT FUNCTION WILL UPDATE BOTH RELATIONS "confirmed" COLUMN TO TRUE
   // REJECT FUNCTION WILL DELETE BOTH RELATIONS ALTOGETHER
   // DELETE FRIEND FUNCTION WILL DO THE SAME
+  const friendship1 = await Friendship.create({ userId: user1.id, friendId: user2.id, requesterId: user1.id })
+  const friendship1reverse = await Friendship.create({ userId: user2.id, friendId: user1.id, requesterId: user1.id })
+  await Friendship.create({ userId: user1.id, friendId: user3.id, requesterId: user1.id, confirmed: true })
+  await Friendship.create({ userId: user3.id, friendId: user1.id, requesterId: user1.id, confirmed: true })
+  await Friendship.create({ userId: user1.id, friendId: user4.id, requesterId: user1.id, confirmed: true })
+  await Friendship.create({ userId: user4.id, friendId: user1.id, requesterId: user1.id, confirmed: true })
+  await Friendship.create({ userId: user1.id, friendId: user5.id, requesterId: user1.id, confirmed: true })
+  await Friendship.create({ userId: user5.id, friendId: user1.id, requesterId: user1.id, confirmed: true })
+  await Friendship.create({ userId: user1.id, friendId: user6.id, requesterId: user1.id, confirmed: true })
+  await Friendship.create({ userId: user6.id, friendId: user1.id, requesterId: user1.id, confirmedd: true })
+  await Friendship.create({ userId: user1.id, friendId: user7.id, requesterId: user1.id, confirmed: true })
+  await Friendship.create({ userId: user7.id, friendId: user1.id, requesterId: user1.id, confirmed: true })
+  await Friendship.create({ userId: user1.id, friendId: user8.id, requesterId: user8.id, confirmed: false })
+  await Friendship.create({ userId: user8.id, friendId: user1.id, requesterId: user8.id, confirmed: false })
+  await Friendship.create({ userId: user1.id, friendId: user9.id, requesterId: user9.id, confirmed: false })
+  await Friendship.create({ userId: user9.id, friendId: user1.id, requesterId: user9.id, confirmed: false })
+  await Friendship.create({ userId: user1.id, friendId: user10.id, requesterId: user10.id, confirmed: false })
+  await Friendship.create({ userId: user10.id, friendId: user1.id, requesterId: user10.id, confirmed: false })
 
-
-  const testFindFriends = await User.findOne({ where: { id: user1.id }, include: [{ model: User, as: 'friend' }] })
-
-
-  console.log('FRIENDSHIP1', friendship1)
-  console.log('FRIENDSHIP1 REVERSE', friendship1reverse)
-  console.log(testFindFriends)
   const chat = await Chat.create({ name: 'chat1' })
 
   const addUserToChat = async (chat, newUser) => {
@@ -100,7 +114,6 @@ async function seed() {
     include: [Message, User],
     order: [[Message, 'createdAt', 'ASC']]
   })
-  console.log('foundChat1', foundChat1)
 
   // MUST MAKE A COPY WITH SLICE OR ... TO NOT SORT ORIGINAL ARRAY
   // foundChat1.dataValues.messages.sort((a, b) => a.createdAt - b.createdAt).forEach(m => console.log('SORTED? ', m.dataValues))
