@@ -7,9 +7,11 @@
     "build-client": "webpack",
     "build-client-watch": "webpack -w",
     "seed": "node scripts/seed.js",
-    "start": "node server",
+    "heroku-postbuild": "webpack -p",
+    "start": "node server/index.js",
+    "deploy": "scripts/deploy",
     "start-dev": "NODE_ENV='development' npm run build-client-watch & NODE_ENV='development' npm run start-server",
-    "start-server": "nodemon server -e html,js,scss --ignore public --ignore client"
+    "start-server": "nodemon server -e html,js,scss --ignore public --ignore frontend"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",

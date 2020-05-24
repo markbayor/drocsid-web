@@ -31,7 +31,10 @@ const ChatsNavbar = ({ user, friends, chats, showSearch, setShowSearch, incoming
   const handleRejectFriendRequest = (id) => rejectReq(id)
   const handleCancelFriendRequest = (id) => cancelReq(id)
   const handleDeleteFriend = (id) => deleteFrnd(id)
-  const handleChatClick = (id) => loadSingleChat(id)
+  const handleChatClick = (id) => {
+    loadSingleChat(id)
+    setShowSearch(false)
+  }
   const handleClickOnFriend = (friendId) => {
     const chatExists = chats.find(chat => chat.users.length === 2 && chat.users.find(user => user.id === friendId))
     if (chatExists) {

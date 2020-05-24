@@ -31,7 +31,7 @@ const ChatComponent = ({ user, single_chat, sendMessage, showSearch }) => {
   return (
     <Layout className="site-layout" style={{ marginLeft: 198 }}>
       <Header className="site-layout-background" style={{ zIndex: 1000, padding: 0, color: 'white', position: 'fixed', top: 64, right: 0, width: 'calc(100vw - 200px)' }}>
-        chat menu will go here
+        Chat with {single_chat.users && single_chat.users.filter(u => u.username !== user.username).map(u => u.username).join(', ')}
       </Header>
       <Content style={{ margin: '90px 16px 65px ', overflow: 'initial', top: 0 }}>
         {showSearch ? <SearchComponent />
@@ -54,14 +54,7 @@ const ChatComponent = ({ user, single_chat, sendMessage, showSearch }) => {
                   </List.Item>
                 )
 
-              }) : <Empty description='Click on a chat to start chatting!' />}
-              {/*single_chat.message && !single_chat.messages.length > 0 ?
-              <List.Item>
-                <List.Item.Meta
-                  title={<span>No messages yet!</span>} //SHOW LEFT OR RIGHT OR CHANGE COLOR FOR MINE OR SOMETHING
-                  description='Get messaging!'
-                />
-            </List.Item> : '' */}
+              }) : <Empty description='No messages yet!' />}
               <div ref={messagesEndRef} />
             </List>
 
