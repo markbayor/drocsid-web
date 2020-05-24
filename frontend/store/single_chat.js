@@ -30,9 +30,6 @@ export const sendMessageToChat = (chatId, text, username) => async dispatch => {
   }
 }
 
-
-
-
 export default function (state = defaultVal, action) {
   let newState = { ...state }
   switch (action.type) {

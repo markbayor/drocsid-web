@@ -27,7 +27,6 @@ const ChatComponent = ({ user, single_chat, sendMessage, showSearch }) => {
     setText('')
     form.resetFields()
   }
-  console.log('SINGLE CHAT', single_chat)
 
   return (
     <Layout className="site-layout" style={{ marginLeft: 198 }}>
@@ -41,28 +40,21 @@ const ChatComponent = ({ user, single_chat, sendMessage, showSearch }) => {
             <List itemLayout="horizontal">
               {single_chat.messages && single_chat.messages.length ? single_chat.messages.map((message, idx) => {
                 const isSentByMe = message.userId === user.id
+
                 return (
                   <List.Item key={idx} style={{ marginRight: isSentByMe ? 7 : 'auto', justifyContent: isSentByMe ? 'flex-end' : 'flex-start', margin: 7, backgroundColor: isSentByMe ? '#69c0ff' : '#e6f7ff', padding: 8, border: 1, borderRadius: 5 }}>
-                    {isSentByMe ?
-                      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                        <div>
-                          <h4 style={{ textAlign: 'right' }}>{message.user.username}</h4>
-                          <div style={{ textAlign: 'right', color: 'white' }}>{message.text}</div>
-                        </div>
-                        <Avatar style={{ marginLeft: 8 }} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                      {!isSentByMe && <Avatar style={{ marginRight: 10 }} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                      <div>
+                        <h4 style={{ textAlign: isSentByMe ? 'right' : 'left' }}>{message.user.username}</h4>
+                        <div style={{ textAlign: isSentByMe ? 'right' : 'left', color: isSentByMe ? 'white' : '#595959' }}>{message.text}</div>
                       </div>
-                      :
-                      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                        <Avatar style={{ marginRight: 8 }} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                        <div>
-                          <h4 style={{ textAlign: 'left' }}>{message.user.username}</h4>
-                          <div style={{ textAlign: 'left', color: '#595959' }}>{message.text}</div>
-                        </div>
-                      </div>
-                    }
+                      {isSentByMe && <Avatar style={{ marginLeft: 10 }} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                    </div>
                   </List.Item>
                 )
-              }) : <Empty description='No messages yet!' />}
+
+              }) : <Empty description='Click on a chat to start chatting!' />}
               {/*single_chat.message && !single_chat.messages.length > 0 ?
               <List.Item>
                 <List.Item.Meta

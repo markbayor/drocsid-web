@@ -1,7 +1,8 @@
 import axios from 'axios'
+import { _sendMessage } from './single_chat'
 
 const GET_CHATS = 'GET_CHATS'
-const ADD_MESSAGE_TO_CHATS = 'ADD_MESSAGE_TO_CHAT'
+const ADD_MESSAGE_TO_CHATS = 'ADD_MESSAGE_TO_CHATS'
 const CREATE_TWOPERSON_CHAT = 'CREATE_TWOPERSON_CHAT'
 const DELETE_TWOPERSON_CHAT = 'DELETE_TWOPERSON_CHAT'
 const defaultVal = []
@@ -10,6 +11,23 @@ const _getChats = chats => ({ type: GET_CHATS, chats })
 export const _addMessageToChats = data => ({ type: ADD_MESSAGE_TO_CHATS, data })
 const _createTwoPersonChat = chat => ({ type: CREATE_TWOPERSON_CHAT, chat })
 const _deleteTwoPersonChat = partnerId => ({ type: DELETE_TWOPERSON_CHAT, partnerId })
+
+
+export const addMessage = (data) => async (dispatch, getState) => {
+  try {
+    const chat = getState().chats.find(chat => chat.id === data.message.chatId)
+    const single_chat = getState().single_chat
+    if (chat) {
+      if (single_chat.id === data.message.chatId) {
+        return dispatch(_sendMessage(data))
+      } else {
+        return dispatch(_addMessageToChats(data))
+      }
+    }
+  } catch (ex) {
+    console.log(ex)
+  }
+}
 
 export const getEmptyChats = () => async dispatch => {
   try {
@@ -56,7 +74,8 @@ export default function (state = defaultVal, action) {
     case ADD_MESSAGE_TO_CHATS:
       action.data.message.user = {}
       action.data.message.user.username = action.data.username
-      const chatIdx = newState.findIndex(chat => chat.id === action.message.chatId)
+      const chatIdx = newState.findIndex(chat => chat.id === action.data.message.chatId)
+      console.log('CHAT MESSAGES', newState[chatIdx])
       newState[chatIdx].messages = [...newState[chatIdx].messages, action.data.message]
       return newState
     case CREATE_TWOPERSON_CHAT:

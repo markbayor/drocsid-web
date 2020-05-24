@@ -104,8 +104,6 @@ async function bootApp() {
 
 bootApp()
 
-
-
 module.exports = {
   app,
   socketServer

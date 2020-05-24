@@ -4,8 +4,8 @@ import { default as socket } from '../socket'
 
 
 import { getFriends, getRequests } from '../store/friends'
-import { getEmptyChats } from '../store/chats'
-import { getPopulatedChat, _sendMessage, _addMessageToChats } from '../store/single_chat'
+import { getFilledChats, addMessage } from '../store/chats'
+import { getPopulatedChat, } from '../store/single_chat'
 
 import { ChatsNavbar, ChatComponent, SearchComponent } from '../components'
 
@@ -17,15 +17,7 @@ const _ChatsPage = props => {
   useEffect(() => {
     props.loadAll()
     socket.on('message', ({ message, username }) => {
-      console.log('MESSAGE', message)
-      const chat = props.chats.find(chat => chat.id === message.chatId)
-      if (chat) {
-        if (props.single_chat.id === message.chatId) {
-          props.addMessageToChat({ message, username })
-        } else {
-          props.addMessageToChats({ message, username })
-        }
-      }
+      props.addMessage({ message, username })
     })
   }, [])
 
@@ -56,16 +48,13 @@ const mapDispatchToProps = dispatch => {
     loadAll() {
       dispatch(getFriends())
       dispatch(getRequests())
-      dispatch(getEmptyChats())
+      dispatch(getFilledChats())
     },
     loadSingleChat(id) {
       dispatch(getPopulatedChat(id))
     },
-    addMessageToChat(data) {
-      dispatch(_sendMessage(data))
-    },
-    addMessageToChats(data) {
-      dispatch(_addMessageToChats(data))
+    addMessage(data) {
+      dispatch(addMessage(data))
     }
   }
 }

@@ -41,8 +41,6 @@ const ChatsNavbar = ({ user, friends, chats, showSearch, setShowSearch, incoming
       loadSingleChat(null, friendId)
     }
   }
-
-
   return (
     <Sider style={{
       overflow: 'auto',
