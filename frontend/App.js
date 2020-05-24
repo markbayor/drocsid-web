@@ -5,12 +5,11 @@ import Routes from './routes'
 
 import 'antd/dist/antd.css';
 
-import { Layout, Menu } from 'antd';
-const { Header, Content, Footer, Sider } = Layout;
+import { Layout } from 'antd';
 
 const App = () => {
   return (
-    <Layout>
+    <Layout style={{ height: '100vh' }}>
       <Navbar />
       <Layout style={{ marginTop: 62 }}>
         <Routes />

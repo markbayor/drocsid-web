@@ -1,63 +1,88 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
-
+import { default as SearchComponent } from './SearchComponent'
 import { getPopulatedChat, sendMessageToChat } from '../store/single_chat'
 
 
-import { Form, Layout, Menu, List, Avatar, Input, Button } from 'antd';
-const { Header, Content, Footer, Sider } = Layout;
+import { Empty, Form, Layout, List, Avatar, Input, Button } from 'antd';
+const { Header, Content, Footer } = Layout;
 
 
-import { UserOutlined } from '@ant-design/icons'
 
-const ChatComponent = ({ user, single_chat, sendMessage }) => {
+const ChatComponent = ({ user, single_chat, sendMessage, showSearch }) => {
   const [form] = Form.useForm();
   const [text, setText] = useState('')
 
-  useEffect(() => {
+  const messagesEndRef = useRef(null)
+  const scrollToBottom = () => {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+  }
 
-  }, [])
+  useEffect(() => {
+    scrollToBottom()
+  }, [single_chat.messages])
 
   function send() {
     sendMessage(single_chat.id, text, user.username)
     setText('')
+    form.resetFields()
   }
   console.log('SINGLE CHAT', single_chat)
 
   return (
-    <Layout className="site-layout" style={{ marginLeft: 200 }}>
-      <Header className="site-layout-background" style={{ zIndex: 10000, padding: 0, color: 'white', position: 'fixed', top: 50, right: 0, width: 'calc(100vw - 200px)' }}>
+    <Layout className="site-layout" style={{ marginLeft: 198 }}>
+      <Header className="site-layout-background" style={{ zIndex: 1000, padding: 0, color: 'white', position: 'fixed', top: 64, right: 0, width: 'calc(100vw - 200px)' }}>
         chat menu will go here
       </Header>
-      <Content style={{ margin: '24px 16px 65px ', overflow: 'initial' }}>
-        <div className="site-layout-background" style={{ padding: 24, backgroundColor: 'white', boxShadow: '0px 0px 8px 1px rgba(138,135,138,1)' }}>
-          <List itemLayout="horizontal">
-            {single_chat.messages && single_chat.messages.map((message, idx) => {
-              const isSentByMe = message.userId === user.id
-              // if (isSentByMe) {
-              return (
-                <List.Item key={idx} >
-                  <List.Item.Meta
-                    avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />} //TODO
-                    title={<span>{message.user.username}</span>} //SHOW LEFT OR RIGHT OR CHANGE COLOR FOR MINE OR SOMETHING
-                    description={message.text}
-                  />
-                </List.Item>
-              )
-              // }
-            })}
-          </List>
+      <Content style={{ margin: '90px 16px 65px ', overflow: 'initial', top: 0 }}>
+        {showSearch ? <SearchComponent />
+          :
+          (<div className="site-layout-background" style={{ padding: '22px 22px 90px 22px', minHeight: 400, backgroundColor: 'white', boxShadow: '0px 0px 8px 1px rgba(138,135,138,1)' }}>
+            <List itemLayout="horizontal">
+              {single_chat.messages && single_chat.messages.length ? single_chat.messages.map((message, idx) => {
+                const isSentByMe = message.userId === user.id
+                return (
+                  <List.Item key={idx} style={{ marginRight: isSentByMe ? 7 : 'auto', justifyContent: isSentByMe ? 'flex-end' : 'flex-start', margin: 7, backgroundColor: isSentByMe ? '#69c0ff' : '#e6f7ff', padding: 8, border: 1, borderRadius: 5 }}>
+                    {isSentByMe ?
+                      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                        <div>
+                          <h4 style={{ textAlign: 'right' }}>{message.user.username}</h4>
+                          <div style={{ textAlign: 'right', color: 'white' }}>{message.text}</div>
+                        </div>
+                        <Avatar style={{ marginLeft: 8 }} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                      </div>
+                      :
+                      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                        <Avatar style={{ marginRight: 8 }} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                        <div>
+                          <h4 style={{ textAlign: 'left' }}>{message.user.username}</h4>
+                          <div style={{ textAlign: 'left', color: '#595959' }}>{message.text}</div>
+                        </div>
+                      </div>
+                    }
+                  </List.Item>
+                )
+              }) : <Empty description='No messages yet!' />}
+              {/*single_chat.message && !single_chat.messages.length > 0 ?
+              <List.Item>
+                <List.Item.Meta
+                  title={<span>No messages yet!</span>} //SHOW LEFT OR RIGHT OR CHANGE COLOR FOR MINE OR SOMETHING
+                  description='Get messaging!'
+                />
+            </List.Item> : '' */}
+              <div ref={messagesEndRef} />
+            </List>
 
-        </div>
+          </div>)
+        }
       </Content>
       {single_chat.id && <Footer style={{ textAlign: 'center', position: 'fixed', bottom: 0, width: '100%' }}>
-        <Form form={form} name="horizontal_send_message" layout="inline" onFinish={send}>
+        <Form form={form} name="horizontal_send_message" autoComplete='off' layout="inline" onFinish={send}>
           <Form.Item
             name="text"
-
             onChange={e => setText(e.target.value)}
           >
-            <Input value={text} placeholder="Message" style={{ width: 'calc(100vw - 350px)' }} />
+            <Input type='text' allowClear value={text} placeholder="Message" style={{ width: 'calc(100vw - 350px)' }} />
           </Form.Item>
           <Form.Item>
             <Button
@@ -77,6 +102,7 @@ const ChatComponent = ({ user, single_chat, sendMessage }) => {
 const mapState = state => {
   return {
     user: state.user,
+    showSearch: state.search.show
   }
 }
 

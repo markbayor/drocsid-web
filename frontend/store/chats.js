@@ -1,10 +1,15 @@
 import axios from 'axios'
 
 const GET_CHATS = 'GET_CHATS'
-
+const ADD_MESSAGE_TO_CHATS = 'ADD_MESSAGE_TO_CHAT'
+const CREATE_TWOPERSON_CHAT = 'CREATE_TWOPERSON_CHAT'
+const DELETE_TWOPERSON_CHAT = 'DELETE_TWOPERSON_CHAT'
 const defaultVal = []
 
 const _getChats = chats => ({ type: GET_CHATS, chats })
+export const _addMessageToChats = data => ({ type: ADD_MESSAGE_TO_CHATS, data })
+const _createTwoPersonChat = chat => ({ type: CREATE_TWOPERSON_CHAT, chat })
+const _deleteTwoPersonChat = partnerId => ({ type: DELETE_TWOPERSON_CHAT, partnerId })
 
 export const getEmptyChats = () => async dispatch => {
   try {
@@ -24,11 +29,43 @@ export const getFilledChats = () => async dispatch => {
   }
 }
 
+export const createTwoPersonChat = (partnerId) => async dispatch => {
+  try {
+    const chat = (await axios.post(`/api/chats/single/new`, { partnerId })).data
+    dispatch(_createTwoPersonChat(chat))
+  } catch (ex) {
+    console.log(ex)
+  }
+}
+
+export const deleteTwoPersonChat = (partnerId) => async dispatch => {
+  try {
+    await axios.delete(`/api/chats/single/${partnerId}`)
+    dispatch(_deleteTwoPersonChat(partnerId))
+  } catch (ex) {
+    console.log(ex)
+  }
+}
+
 export default function (state = defaultVal, action) {
   let newState = [...state]
   switch (action.type) {
     case GET_CHATS:
       newState = action.chats
+      return newState
+    case ADD_MESSAGE_TO_CHATS:
+      action.data.message.user = {}
+      action.data.message.user.username = action.data.username
+      const chatIdx = newState.findIndex(chat => chat.id === action.message.chatId)
+      newState[chatIdx].messages = [...newState[chatIdx].messages, action.data.message]
+      return newState
+    case CREATE_TWOPERSON_CHAT:
+      newState = [...newState, action.chat]
+      return newState
+    case DELETE_TWOPERSON_CHAT:
+      const chatId = (newState.find(chat => chat.userIds.includes(action.partnerId))).id
+      console.log('CHATID', chatId)
+      newState = newState.filter(chat => chat.id !== chatId)
       return newState
     default:
       return state

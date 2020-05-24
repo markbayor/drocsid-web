@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { logout } from '../store'
 import { LoginForm } from './LoginForm'
 import { SignupForm } from './SingupForm'
 
-import { Popover, Layout, Menu, Button } from 'antd';
-const { Header, Content, Footer, Sider } = Layout;
+import { Popover, Layout, Button } from 'antd';
+const { Header } = Layout;
 
 import { HomeOutlined, CommentOutlined, LoginOutlined, LogoutOutlined, UserAddOutlined } from '@ant-design/icons'
 

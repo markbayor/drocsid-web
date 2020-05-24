@@ -44,12 +44,13 @@ const getTwoPersonChatWithMessages = async (req, res, next) => {
       const chat = await Chat.findOne({ where: { id: req.body.chatId }, include: [{ model: Message, limit: 50, include: [{ model: User, attributes: ['username'] }] }, User] })
       chat.messages = chat.messages.sort((a, b) => a.createdAt - b.createdAt)
       res.json(chat)
-    } else if (req.body.userId || req.body.partnerId) { //THIS PROBABLY WONT BE USED BUT JUST IN CASE
-      const userId = req.body.id
+    } else if (req.body.partnerId) { //THIS PROBABLY WONT BE USED BUT JUST IN CASE
+      const userId = req.user.id
       const partnerId = req.body.partnerId;
       const chat = await Chat.findOne({ where: { userIds: `${[userId, partnerId].sort().join('::')}` }, include: [{ model: Message, limit: 50, include: [{ model: User, attributes: ['username'] }] }, User] })
       // SORTS THEM HERE, GOTTA LOOK INTO IT WITH SOME SEQUELIZE METHOD 
       // TODO
+      console.log(chat)
       chat.messages = chat.messages.sort((a, b) => a.createdAt - b.createdAt)
       res.json(chat)
 
@@ -70,7 +71,8 @@ const createTwoPersonChat = async (req, res, next) => {
     await ChatsUsers.create({ userId, chatId: chat.id })
     await ChatsUsers.create({ userId: partnerId, chatId: chat.id })
     // send back chat TODO
-    res.status(200).json(chat)
+    const returnChat = await Chat.findOne({ where: { id: chat.id }, include: [{ model: Message, limit: 50, include: [{ model: User, attributes: ['username'] }] }, User] })
+    res.status(200).json(returnChat)
   } catch (ex) {
     console.log(ex)
     next(ex)
@@ -135,6 +137,22 @@ const removeUserFromGroupChat = async (req, res, next) => {
   }
 }
 
+const deleteTwoPersonChat = async (req, res, next) => {
+  try {
+    const userId = req.user.id
+    const { partnerId } = req.params
+    const chat = await Chat.findOne({ where: { userIds: `${[userId, partnerId].sort().join('::')}` } })
+    const messages = await Message.findAll({ where: { chatId: chat.id } })
+    await chat.destroy()
+    await messages.forEach(message => message.destroy())
+
+    res.status(204).json({ message: 'Deleted' })
+  } catch (ex) {
+    console.log(ex)
+    next(ex)
+  }
+}
+
 module.exports = {
   adminGetAllChats,
   getUserChats,
@@ -143,5 +161,6 @@ module.exports = {
   createGroupChat,
   getTwoPersonChatWithMessages,
   addUserToGroupChat,
-  removeUserFromGroupChat
+  removeUserFromGroupChat,
+  deleteTwoPersonChat
 }

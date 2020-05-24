@@ -1,64 +1,102 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 
-import { getFriends, getRequests } from '../store/friends'
-import { getEmptyChats } from '../store/chats'
+import { getFriends, getRequests, acceptRequest, rejectRequest, cancelRequest, deleteFriend } from '../store/friends'
+import { getEmptyChats, createTwoPersonChat, deleteTwoPersonChat } from '../store/chats'
 import { getPopulatedChat } from '../store/single_chat'
+import { setShowSearchComponent } from '../store/search'
 
-import { UserOutlined, CommentOutlined, MessageOutlined, DeleteOutlined, CheckSquareOutlined, CloseSquareOutlined, ArrowDownOutlined, ArrowUpOutlined, TeamOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  CommentOutlined,
+  MessageOutlined,
+  DeleteOutlined,
+  CheckSquareOutlined,
+  CloseSquareOutlined,
+  TeamOutlined,
+  MailOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 
-import { Layout, Menu } from 'antd';
-const { Header, Content, Footer, Sider } = Layout;
-const { SubMenu } = Menu
+import { Collapse, Layout, Menu, Button, } from 'antd';
+const { Sider } = Layout;
+const { Panel } = Collapse;
 
-const ChatsNavbar = ({ user, friends, chats, incomingRequests, sentRequests, loadAll, loadSingleChat }) => {
-  const [collapsed, setCollapsed] = useState(false)
-
+const ChatsNavbar = ({ user, friends, chats, showSearch, setShowSearch, incomingRequests, sentRequests, loadAll, loadSingleChat, newTwoPersonChat, acceptReq, rejectReq, cancelReq, deleteFrnd }) => {
   useEffect(() => {
     loadAll()
   }, [])
 
-  const onCollapse = collapsed => {
-    setCollapsed(collapsed);
-  };
-
-  function handleFriendsClick() { }
-
-  function handleChatClick(id) {
-    loadSingleChat(id)
+  const handleAcceptFriendRequest = (id) => acceptReq(id)
+  const handleRejectFriendRequest = (id) => rejectReq(id)
+  const handleCancelFriendRequest = (id) => cancelReq(id)
+  const handleDeleteFriend = (id) => deleteFrnd(id)
+  const handleChatClick = (id) => loadSingleChat(id)
+  const handleClickOnFriend = (friendId) => {
+    const chatExists = chats.find(chat => chat.users.length === 2 && chat.users.find(user => user.id === friendId))
+    if (chatExists) {
+      loadSingleChat(chatExists.id)
+    } else {
+      newTwoPersonChat(friendId)
+      loadSingleChat(null, friendId)
+    }
   }
+
 
   return (
     <Sider style={{
       overflow: 'auto',
       height: '100vh',
       position: 'fixed',
-      left: 0,
-    }} collapsible collapsed={collapsed} onCollapse={onCollapse}>
+      left: 0
+    }}>
       <Menu theme="light" mode="inline">
-        <SubMenu title={<span><TeamOutlined /><span>Friends</span></span>}>
-          <SubMenu title={<span><MailOutlined /><span>Requests</span></span>}>
-            <SubMenu title="Sent Requests" title={<span><ArrowUpOutlined /><span>Sent Requests</span></span>}>
-              {sentRequests.map((request, idx) => {
-                return (
-                  <SubMenu key={idx} title={<span>{request.username}</span>}>
+        <Collapse>
+          <Panel header={<span><TeamOutlined />{' '}<span>Friends</span></span>} key="1">
+            <Button style={{ marginLeft: 19, marginBottom: 12 }} type='primary' icon={<SearchOutlined />} onClick={() => setShowSearch(!showSearch)}>Find friends!</Button>
+            <Collapse>
+              <Panel header={<span><MailOutlined />{' '}<span>Requests</span></span>} key="1">
+                <Collapse>
+                  <Panel header={<span><span>Sent</span></span>} key="1">
+                    {sentRequests.map((request) => {
+                      return (
+                        <div key={request.id} style={{ display: 'flex', flexDirection: 'space-around' }}>
+                          <h4>{request.username}</h4>{' '}<Button icon={<CloseSquareOutlined />} onClick={() => handleCancelFriendRequest(request.id)}></Button>
+                        </div>
+                      )
+                    })}
+                  </Panel>
+                </Collapse>
+                <Collapse>
+                  <Panel header={<span><span>Received</span></span>} key="1">
+                    {incomingRequests.map((request) => {
+                      return (
+                        <div key={request.id} style={{ display: 'flex', flexDirection: 'space-around' }}>
+                          <h4>{request.username}</h4>
+                          <Button onClick={() => handleAcceptFriendRequest(request.id)} icon={<CheckSquareOutlined />} />
+                          <Button onClick={() => handleRejectFriendRequest(request.id)} icon={<CloseSquareOutlined />} />
+                        </div>
+                      )
+                    })}
+                  </Panel>
+                </Collapse>
 
-                  </SubMenu>
-                )
-              })}
-            </SubMenu>
-            <SubMenu title="Incoming Requests" title={<span><ArrowDownOutlined /><span>Incoming requests</span></span>}>
-              {incomingRequests.map((request, idx) => {
-                return (
-                  <SubMenu key={idx} title={<span>{request.username}</span>}>
-
-                  </SubMenu>
-                )
-              })}
-            </SubMenu>
-          </SubMenu>
-          {friends.map((friend, idx) => <Menu.Item key={idx} icon={<UserOutlined />}>{friend.username}</Menu.Item>)}
-        </SubMenu>
+              </Panel>
+            </Collapse>
+            <br />
+            {friends.map((friend, idx) => {
+              return (
+                <Collapse key={friend.id}>
+                  <Panel header={<span><UserOutlined />{friend.username}</span>} key={idx}>
+                    <Button onClick={() => handleClickOnFriend(friend.id)} icon={<MessageOutlined />}>Chat!</Button>
+                    <Button onClick={() => handleDeleteFriend(friend.id)} icon={<DeleteOutlined />}>Delete :(</Button>
+                  </Panel>
+                </Collapse>
+              )
+            })
+            }
+          </Panel>
+        </Collapse>
       </Menu>
       <Menu theme="light" mode="vertical" onClick={({ key }) => handleChatClick(key)}>
         {chats &&
@@ -85,6 +123,7 @@ const mapState = state => {
     incomingRequests: state.friends.incomingRequests,
     sentRequests: state.friends.sentRequests,
     chats: state.chats,
+    showSearch: state.search.show
   }
 }
 
@@ -95,8 +134,27 @@ const mapDispatch = dispatch => {
       dispatch(getRequests())
       dispatch(getEmptyChats())
     },
-    loadSingleChat(id) {
-      dispatch(getPopulatedChat(id))
+    loadSingleChat(chatId, friendId) {
+      dispatch(getPopulatedChat(chatId, friendId))
+    },
+    acceptReq(id) {
+      dispatch(acceptRequest(id))
+    },
+    rejectReq(id) {
+      dispatch(rejectRequest(id))
+    },
+    cancelReq(id) {
+      dispatch(cancelRequest(id))
+    },
+    deleteFrnd(friendId) {
+      dispatch(deleteFriend(friendId))
+      dispatch(deleteTwoPersonChat(friendId))
+    },
+    newTwoPersonChat(friendId) {
+      dispatch(createTwoPersonChat(friendId))
+    },
+    setShowSearch(bool) {
+      dispatch(setShowSearchComponent(bool))
     }
   }
 }

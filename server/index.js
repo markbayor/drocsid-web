@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 5000
 const app = express()
 const socketio = require('socket.io')
 require('dotenv').config()
-module.exports = app
 
 passport.serializeUser((user, done) => done(null, user.id))
 
@@ -77,7 +76,7 @@ const createApp = () => {
     res.status(err.status || 500).send(err.message || 'Internal server error.')
   })
 }
-
+let _socketServer
 const startListening = () => {
   // start listening (and create a 'server' object representing our server)
   const server = app.listen(PORT, () =>
@@ -85,9 +84,13 @@ const startListening = () => {
   )
 
   // set up our socket control center
-  const io = socketio(server)
-  require('./socket')(io)
+  _socketServer = socketio(server)
+
+  require('./socket')(_socketServer)
 }
+
+const socketServer = () => _socketServer
+
 
 const syncDb = () => db.sync()
 
@@ -96,6 +99,14 @@ async function bootApp() {
   await syncDb()
   await createApp()
   await startListening()
+
 }
 
 bootApp()
+
+
+
+module.exports = {
+  app,
+  socketServer
+}

@@ -1,5 +1,6 @@
 const { User, Chat, Message, ChatsUsers } = require('../../db/models')
 const { Op } = require('sequelize')
+const { socketServer } = require('../../index')
 
 //must send req.user.id, chatId and text (content) in req.body
 const sendMessage = async (req, res, next) => {
@@ -12,6 +13,9 @@ const sendMessage = async (req, res, next) => {
     // await ChatsMessages.create({ chatId, messageId: message.id, senderId: req.user.id })
     // send back message to handle in frontend or socket or whatever
     console.log()
+
+    socketServer().emit('message', { message, username: req.body.username })
+
     res.status(200).json({ message, username: req.body.username })
   } catch (ex) {
     console.log(ex)
