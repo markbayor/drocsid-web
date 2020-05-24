@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 5000
 const app = express()
 const socketio = require('socket.io')
 const { corsRoute } = require('./middleware')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 // passport.serializeUser((user, done) => done(null, user.id))

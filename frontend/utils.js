@@ -1,22 +1,30 @@
 import axios from "axios"
 
 const getJwt = () => {
-  window.localStorage.getItem('accessToken')
+  return window.localStorage.getItem('accessToken')
 }
 
 const AxiosHttpRequest = async (method, url, data) => {
-  if (data) {
-    return axios[method](url, data, {
-      headers: {
-        'Authorization': `Bearer ${getJwt()}`
-      }
-    })
-  } else {
-    return axios[method](url, {
-      headers: {
-        'Authorization': `Bearer ${getJwt()}`
-      }
-    })
+  switch (method) {
+    case 'GET':
+      return axios.get(url, {
+        headers: {
+          'Authorization': `Bearer ${getJwt()}`
+        }
+      })
+    case 'POST':
+      return axios.post(url, data, {
+        headers: {
+          'Authorization': `Bearer ${getJwt()}`,
+        }
+      })
+    case 'DELETE':
+      return axios.delete(url,
+        {
+          headers: {
+            'Authorization': `Bearer ${getJWt()}`
+          }
+        })
   }
 }
 

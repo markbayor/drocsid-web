@@ -2,6 +2,7 @@ import axios from 'axios'
 import { AxiosHttpRequest } from '../utils'
 
 
+
 const defaultVal = { friends: [], incomingRequests: [], sentRequests: [] }
 
 const GET_FRIENDS = 'GET_FRIENDS'
@@ -24,7 +25,7 @@ const _cancelRequest = friendId => ({ type: CANCEL_REQUEST, friendId })
 
 export const getFriends = () => async dispatch => {
   try {
-    const friends = (await AxiosHttpRequest('get', '/api/friends')).data
+    const friends = (await AxiosHttpRequest('GET', '/api/friends')).data
     return dispatch(_getFriends(friends))
   } catch (ex) {
     console.log(ex)
@@ -34,10 +35,10 @@ export const getFriends = () => async dispatch => {
 export const sendRequest = (id, username) => async dispatch => {
   try {
     if (id) {
-      const requested = (await AxiosHttpRequest('post', '/api/friends/requests/add', { friendId: id })).data
+      const requested = (await AxiosHttpRequest('POST', '/api/friends/requests/add', { friendId: id })).data
       return dispatch(_sendRequest(requested))
     } else {
-      const requested = (await axios.post('/api/friends/requests/add', { friendUsername: username })).data
+      const requested = (await AxiosHttpRequest('POST', '/api/friends/requests/add', { friendUsername: username })).data
       return dispatch(_sendRequest(requested))
     }
   } catch (ex) {
@@ -47,7 +48,7 @@ export const sendRequest = (id, username) => async dispatch => {
 
 export const deleteFriend = (friendId) => async dispatch => {
   try {
-    await axios.delete(`/api/friends/requests/reject/${friendId}`)
+    await AxiosHttpRequest('DELETE', `/api/friends/requests/reject/${friendId}`)
     return dispatch(_deleteFriend(friendId))
   } catch (ex) {
     console.log(ex)
@@ -57,7 +58,7 @@ export const deleteFriend = (friendId) => async dispatch => {
 
 export const getRequests = () => async dispatch => {
   try {
-    const { incomingRequests, sentRequests } = (await axios.get('/api/friends/requests')).data
+    const { incomingRequests, sentRequests } = (await AxiosHttpRequest('GET', '/api/friends/requests')).data
     return dispatch(_getRequests(incomingRequests, sentRequests))
   } catch (ex) {
     console.log(ex)
@@ -66,7 +67,7 @@ export const getRequests = () => async dispatch => {
 
 export const acceptRequest = (id) => async dispatch => {
   try {
-    const friend = (await axios.post('/api/friends/requests/accept', { requesterId: id })).data
+    const friend = (await AxiosHttpRequest('POST', '/api/friends/requests/accept', { requesterId: id })).data
     console.log('FRIEND IN THUNK', friend)
     return dispatch(_acceptRequest(friend))
   } catch (ex) {
@@ -76,7 +77,7 @@ export const acceptRequest = (id) => async dispatch => {
 
 export const rejectRequest = (requesterId) => async dispatch => {
   try {
-    await axios.delete(`/api/friends/requests/reject/${requesterId}`)
+    await AxiosHttpRequest('DELETE', `/api/friends/requests/reject/${requesterId}`)
     return dispatch(_rejectRequest(requesterId))
   } catch (ex) {
     console.log(ex)
@@ -85,7 +86,7 @@ export const rejectRequest = (requesterId) => async dispatch => {
 
 export const cancelRequest = (friendId) => async dispatch => {
   try {
-    await axios.delete(`/api/friends/requests/cancel/${friendId}`)
+    await AxiosHttpRequest('DELETE'`/api/friends/requests/cancel/${friendId}`)
     return dispatch(_cancelRequest(friendId))
   } catch (ex) {
     console.log(ex)
