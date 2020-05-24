@@ -1,4 +1,4 @@
-const User = require('./user')
+const User = require('./User')
 const Message = require('./Message')
 const Chat = require('./Chat')
 const ChatsUsers = require('./Chats_users')
