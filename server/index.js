@@ -9,6 +9,7 @@ const sessionStore = new SequelizeStore({ db })
 const PORT = process.env.PORT || 5000
 const app = express()
 const socketio = require('socket.io')
+const { corsRoute } = require('./middleware')
 require('dotenv').config()
 
 passport.serializeUser((user, done) => done(null, user.id))
@@ -38,6 +39,7 @@ const createApp = () => {
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
+  app.use(corsRoute)
   app.use(
     session({
       secret: process.env.SESSION_SECRET || 'my best friend is Cody',
