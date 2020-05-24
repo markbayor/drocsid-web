@@ -1,7 +1,7 @@
 const path = require('path')
 const express = require('express')
 const session = require('express-session')
-const passport = require('passport')
+// const passport = require('passport')
 const morgan = require('morgan')
 const SequelizeStore = require('connect-session-sequelize')(session.Store)
 const db = require('./db')
@@ -12,24 +12,24 @@ const socketio = require('socket.io')
 const { corsRoute } = require('./middleware')
 require('dotenv').config()
 
-passport.serializeUser((user, done) => done(null, user.id))
+// passport.serializeUser((user, done) => done(null, user.id))
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await db.models.user.findByPk(id)
-    const res = {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-      isAdmin: user.isAdmin,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt
-    }
-    done(null, res)
-  } catch (err) {
-    done(err)
-  }
-})
+// passport.deserializeUser(async (id, done) => {
+//   try {
+//     const user = await db.models.user.findByPk(id)
+//     const res = {
+//       id: user.id,
+//       email: user.email,
+//       username: user.username,
+//       isAdmin: user.isAdmin,
+//       createdAt: user.createdAt,
+//       updatedAt: user.updatedAt
+//     }
+//     done(null, res)
+//   } catch (err) {
+//     done(err)
+//   }
+// })
 
 const createApp = () => {
   // logging middleware
@@ -48,8 +48,8 @@ const createApp = () => {
       saveUninitialized: false
     })
   )
-  app.use(passport.initialize())
-  app.use(passport.session())
+  // app.use(passport.initialize())
+  // app.use(passport.session())
 
   app.use('/auth', require('./auth'))
   app.use('/api', require('./api'))

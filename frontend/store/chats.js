@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { _sendMessage } from './single_chat'
+import { AxiosHttpRequest } from '../utils'
 
 const GET_CHATS = 'GET_CHATS'
 const ADD_MESSAGE_TO_CHATS = 'ADD_MESSAGE_TO_CHATS'
@@ -33,7 +34,7 @@ export const addMessage = (data) => async (dispatch, getState) => {
 
 export const getEmptyChats = () => async dispatch => {
   try {
-    const chats = (await axios.get('/api/chats/all')).data
+    const chats = (await AxiosHttpRequest('get', '/api/chats/all')).data
     dispatch(_getChats(chats))
   } catch (ex) {
     console.log(ex)
@@ -42,7 +43,7 @@ export const getEmptyChats = () => async dispatch => {
 
 export const getFilledChats = () => async dispatch => {
   try {
-    const chats = (await axios.get('/api/chats/all/populated')).data
+    const chats = (await AxiosHttpRequest('get', '/api/chats/all/populated')).data
     dispatch(_getChats(chats))
   } catch (ex) {
     console.log(ex)
@@ -51,7 +52,7 @@ export const getFilledChats = () => async dispatch => {
 
 export const createTwoPersonChat = (partnerId) => async dispatch => {
   try {
-    const chat = (await axios.post(`/api/chats/single/new`, { partnerId })).data
+    const chat = (await AxiosHttpRequest('post', `/api/chats/single/new`, { partnerId })).data
     dispatch(_createTwoPersonChat(chat))
   } catch (ex) {
     console.log(ex)
@@ -60,7 +61,7 @@ export const createTwoPersonChat = (partnerId) => async dispatch => {
 
 export const deleteTwoPersonChat = (partnerId) => async dispatch => {
   try {
-    await axios.delete(`/api/chats/single/${partnerId}`)
+    await AxiosHttpRequest('delete', `/api/chats/single/${partnerId}`)
     dispatch(_deleteTwoPersonChat(partnerId))
   } catch (ex) {
     console.log(ex)
@@ -77,7 +78,6 @@ export default function (state = defaultVal, action) {
       action.data.message.user = {}
       action.data.message.user.username = action.data.username
       const chatIdx = newState.findIndex(chat => chat.id === action.data.message.chatId)
-      console.log('CHAT MESSAGES', newState[chatIdx])
       newState[chatIdx].messages = [...newState[chatIdx].messages, action.data.message]
       return newState
     case CREATE_TWOPERSON_CHAT:
@@ -85,7 +85,6 @@ export default function (state = defaultVal, action) {
       return newState
     case DELETE_TWOPERSON_CHAT:
       const chatId = (newState.find(chat => chat.userIds.includes(action.partnerId))).id
-      console.log('CHATID', chatId)
       newState = newState.filter(chat => chat.id !== chatId)
       return newState
     default:

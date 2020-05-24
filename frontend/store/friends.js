@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { AxiosHttpRequest } from '../utils'
+
 
 const defaultVal = { friends: [], incomingRequests: [], sentRequests: [] }
 
@@ -22,7 +24,7 @@ const _cancelRequest = friendId => ({ type: CANCEL_REQUEST, friendId })
 
 export const getFriends = () => async dispatch => {
   try {
-    const friends = (await axios.get('/api/friends')).data
+    const friends = (await AxiosHttpRequest('get', '/api/friends')).data
     return dispatch(_getFriends(friends))
   } catch (ex) {
     console.log(ex)
@@ -32,7 +34,7 @@ export const getFriends = () => async dispatch => {
 export const sendRequest = (id, username) => async dispatch => {
   try {
     if (id) {
-      const requested = (await axios.post('/api/friends/requests/add', { friendId: id })).data
+      const requested = (await AxiosHttpRequest('post', '/api/friends/requests/add', { friendId: id })).data
       return dispatch(_sendRequest(requested))
     } else {
       const requested = (await axios.post('/api/friends/requests/add', { friendUsername: username })).data
