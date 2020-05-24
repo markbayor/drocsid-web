@@ -15,6 +15,8 @@ const _deleteTwoPersonChat = partnerId => ({ type: DELETE_TWOPERSON_CHAT, partne
 
 export const addMessage = (data) => async (dispatch, getState) => {
   try {
+    const user = getState().user
+    if (user.username === data.username) return // WE DONT WANNA SEND IT TO OURSELVES DO WE?
     const chat = getState().chats.find(chat => chat.id === data.message.chatId)
     const single_chat = getState().single_chat
     if (chat) {
