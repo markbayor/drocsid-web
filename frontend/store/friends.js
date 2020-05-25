@@ -47,7 +47,7 @@ export const sendRequest = (id, username) => async dispatch => {
 
 export const deleteFriend = (friendId) => async dispatch => {
   try {
-    await AxiosHttpRequest('DELETE', `/api/friends/requests/reject/${friendId}`)
+    await AxiosHttpRequest('DELETE', `/api/friends/delete/${friendId}`)
     return dispatch(_deleteFriend(friendId))
   } catch (ex) {
     console.log(ex)
