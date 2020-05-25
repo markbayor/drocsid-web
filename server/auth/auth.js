@@ -11,7 +11,7 @@ const loginUser = async (req, res, next) => {
       console.log('Incorrect password for user:', req.body.email)
       res.status(401).send('Wrong username and/or password')
     } else {
-      const token = jwt.sign(user.get(), process.env.JWT_SECRET)
+      const token = jwt.sign(user.get(), process.env.JWT_SECRET || 'CMON MAN MAKE A SECRET JESUS CHRIST')
       res.status(200).json(token)
     }
   } catch (err) {
@@ -26,7 +26,7 @@ const signUpUser = async (req, res, next) => {
     if (user.isAdmin === true) {
       user.isAdmin = false
     }
-    const token = jwt.sign(user, process.env.JWT_SECRET)
+    const token = jwt.sign(user, process.env.JWT_SECRET || 'CMON MAN MAKE A SECRET JESUS CHRIST')
     res.status(200).json(token)
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {

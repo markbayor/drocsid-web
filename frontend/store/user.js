@@ -23,6 +23,7 @@ export const signup = (username, email, password) => async dispatch => {
     const token = (await axios.post(`/auth/signup`, { username, email, password })).data
     setJwt(token)
     history.push('/chats')
+    window.location.reload()
   } catch (authError) {
     return dispatch(getUser({ error: authError }))
   }

@@ -9,7 +9,7 @@ const isLoggedIn = async (req, res, next) => {
     if (!authHeader || !authHeader.split('Bearer ')[1]) return res.status(403).json({ message: 'Forbidden' });
 
     const token = authHeader.split('Bearer ')[1]
-    const user = jwt.verify(token, process.env.JWT_SECRET)
+    const user = jwt.verify(token, process.env.JWT_SECRET || 'CMON MAN MAKE A SECRET JESUS CHRIST')
 
     req.user = user
     next()
