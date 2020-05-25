@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { AxiosHttpRequest } from '../utils'
 
 const defaultVal = { show: false, results: [] }
 
@@ -10,7 +10,7 @@ const _getResults = results => ({ type: GET_RESULTS, results })
 
 export const loadSearchResults = (searchVal) => async dispatch => { // search confirms we clicked search and not just returns results for searchbar
   try {
-    const users = (await axios.post('/api/friends/search', { searchVal })).data
+    const users = (await AxiosHttpRequest('POST', '/api/friends/search', { searchVal })).data
     return dispatch(_getResults(users))
   } catch (ex) {
     console.log(ex)

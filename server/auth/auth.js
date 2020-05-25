@@ -1,4 +1,5 @@
 const User = require('../db/models/User')
+const jwt = require('jsonwebtoken')
 
 const loginUser = async (req, res, next) => {
   try {
@@ -10,7 +11,8 @@ const loginUser = async (req, res, next) => {
       console.log('Incorrect password for user:', req.body.email)
       res.status(401).send('Wrong username and/or password')
     } else {
-      req.login(user, err => (err ? next(err) : res.json(user)))
+      const token = jwt.sign(user.get(), process.env.JWT_SECRET)
+      res.status(200).json(token)
     }
   } catch (err) {
     next(err)
@@ -24,24 +26,14 @@ const signUpUser = async (req, res, next) => {
     if (user.isAdmin === true) {
       user.isAdmin = false
     }
-    req.login(user, err => (err ? next(err) : res.json(user)))
+    const token = jwt.sign(user, process.env.JWT_SECRET)
+    res.status(200).json(token)
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
       res.status(401).send('User already exists')
     } else {
       next(err)
     }
-  }
-}
-
-const logOutUser = async (req, res, next) => {
-  try {
-    req.logout()
-    req.session.destroy()
-    res.redirect('/')
-  } catch (ex) {
-    console.log(ex)
-    next(ex)
   }
 }
 
@@ -54,9 +46,10 @@ const getMe = async (req, res, next) => {
   }
 }
 
+
+
 module.exports = {
   loginUser,
   signUpUser,
-  logOutUser,
   getMe
 }

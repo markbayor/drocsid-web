@@ -1,5 +1,6 @@
 import axios from 'axios'
 import history from '../history'
+import { setJwt, getJwt, removeJwt, AxiosHttpRequest } from '../utils'
 /**
  * ACTION TYPES
  */
@@ -17,38 +18,30 @@ const getUser = user => ({ type: GET_USER, user })
 const removeUser = () => ({ type: REMOVE_USER })
 
 export const signup = (username, email, password) => async dispatch => {
-  let user
   try {
-    user = (await axios.post(`/auth/signup`, { username, email, password })).data
+    // will set JWT in localstorage and have to call get/me
+    const token = (await axios.post(`/auth/signup`, { username, email, password })).data
+    setJwt(token)
+    history.push('/chats')
   } catch (authError) {
     return dispatch(getUser({ error: authError }))
-  }
-  try {
-    dispatch(getUser(user))
-    history.push('/chats')
-  } catch (dispatchOrHistoryErr) {
-    console.error(dispatchOrHistoryErr)
   }
 }
 
 export const login = (email, password) => async dispatch => {
-  let user
   try {
-    user = (await axios.post(`/auth/login`, { email, password })).data
+    const token = (await axios.post(`/auth/login`, { email, password })).data
+    setJwt(token)
+    history.push('/chats')
+    window.location.reload()
   } catch (authError) {
     return dispatch(getUser({ error: authError }))
-  }
-  try {
-    dispatch(getUser(user))
-    history.push('/chats')
-  } catch (dispatchOrHistoryErr) {
-    console.error(dispatchOrHistoryErr)
   }
 }
 
 export const logout = () => async dispatch => {
   try {
-    await axios.post('/auth/logout')
+    removeJwt()
     dispatch(removeUser())
     history.push('/')
   } catch (err) {
@@ -60,8 +53,8 @@ export const logout = () => async dispatch => {
 export const me = () => async dispatch => {
   let res
   try {
-    res = await axios.get('/auth/me')
-    //console.log('getting me', res.data)
+    res = await AxiosHttpRequest('GET', '/auth/me')
+    console.log('getting me', res.data)
     dispatch(getUser(res.data || defaultUser))
   } catch (err) {
     console.error(err)

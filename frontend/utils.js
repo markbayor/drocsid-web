@@ -1,10 +1,18 @@
 import axios from "axios"
 
-const getJwt = () => {
+export const getJwt = () => {
   return window.localStorage.getItem('accessToken')
 }
 
-const AxiosHttpRequest = async (method, url, data) => {
+export const setJwt = (jwt) => {
+  return window.localStorage.setItem('accessToken', jwt)
+}
+
+export const removeJwt = () => {
+  window.localStorage.removeItem('accessToken')
+}
+
+export const AxiosHttpRequest = async (method, url, data) => {
   switch (method) {
     case 'GET':
       return axios.get(url, {
@@ -26,9 +34,4 @@ const AxiosHttpRequest = async (method, url, data) => {
           }
         })
   }
-}
-
-module.exports = {
-  getJwt,
-  AxiosHttpRequest
 }

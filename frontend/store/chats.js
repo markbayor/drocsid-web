@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { _sendMessage } from './single_chat'
 import { AxiosHttpRequest } from '../utils'
 
@@ -34,7 +33,7 @@ export const addMessage = (data) => async (dispatch, getState) => {
 
 export const getEmptyChats = () => async dispatch => {
   try {
-    const chats = (await AxiosHttpRequest('get', '/api/chats/all')).data
+    const chats = (await AxiosHttpRequest('GET', '/api/chats/all')).data
     dispatch(_getChats(chats))
   } catch (ex) {
     console.log(ex)
@@ -43,7 +42,7 @@ export const getEmptyChats = () => async dispatch => {
 
 export const getFilledChats = () => async dispatch => {
   try {
-    const chats = (await AxiosHttpRequest('get', '/api/chats/all/populated')).data
+    const chats = (await AxiosHttpRequest('GET', '/api/chats/all/populated')).data
     dispatch(_getChats(chats))
   } catch (ex) {
     console.log(ex)
@@ -52,7 +51,7 @@ export const getFilledChats = () => async dispatch => {
 
 export const createTwoPersonChat = (partnerId) => async dispatch => {
   try {
-    const chat = (await AxiosHttpRequest('post', `/api/chats/single/new`, { partnerId })).data
+    const chat = (await AxiosHttpRequest('POST', `/api/chats/single/new`, { partnerId })).data
     dispatch(_createTwoPersonChat(chat))
   } catch (ex) {
     console.log(ex)
@@ -61,7 +60,7 @@ export const createTwoPersonChat = (partnerId) => async dispatch => {
 
 export const deleteTwoPersonChat = (partnerId) => async dispatch => {
   try {
-    await AxiosHttpRequest('delete', `/api/chats/single/${partnerId}`)
+    await AxiosHttpRequest('DELETE', `/api/chats/single/${partnerId}`)
     dispatch(_deleteTwoPersonChat(partnerId))
   } catch (ex) {
     console.log(ex)
