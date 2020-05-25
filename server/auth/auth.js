@@ -26,7 +26,7 @@ const signUpUser = async (req, res, next) => {
     if (user.isAdmin === true) {
       user.isAdmin = false
     }
-    const token = jwt.sign(user, process.env.JWT_SECRET || 'CMON MAN MAKE A SECRET JESUS CHRIST')
+    const token = jwt.sign(user.get(), process.env.JWT_SECRET || 'CMON MAN MAKE A SECRET JESUS CHRIST')
     res.status(200).json(token)
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
