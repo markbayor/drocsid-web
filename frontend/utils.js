@@ -30,7 +30,7 @@ export const AxiosHttpRequest = async (method, url, data) => {
       return axios.delete(url,
         {
           headers: {
-            'Authorization': `Bearer ${getJWt()}`
+            'Authorization': `Bearer ${getJwt()}`
           }
         })
   }

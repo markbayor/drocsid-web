@@ -85,7 +85,7 @@ export const rejectRequest = (requesterId) => async dispatch => {
 
 export const cancelRequest = (friendId) => async dispatch => {
   try {
-    await AxiosHttpRequest('DELETE'`/api/friends/requests/cancel/${friendId}`)
+    await AxiosHttpRequest('DELETE', `/api/friends/requests/cancel/${friendId}`)
     return dispatch(_cancelRequest(friendId))
   } catch (ex) {
     console.log(ex)
