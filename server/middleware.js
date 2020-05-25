@@ -1,4 +1,23 @@
 const { User } = require('./db/models')
+const jwt = require('jsonwebtoken')
+
+const isLoggedIn = async (req, res, next) => {
+  try {
+    console.log('HEADERS', req.headers)
+    const authHeader = req.headers['authorization']
+
+    if (!authHeader || !authHeader.split('Bearer ')[1]) return res.status(403).json({ message: 'Forbidden' });
+
+    const token = authHeader.split('Bearer ')[1]
+    const user = jwt.verify(token, process.env.JWT_SECRET)
+
+    req.user = user
+    next()
+  } catch (ex) {
+    console.log(ex)
+    next(ex)
+  }
+}
 
 const isAdmin = async (req, res, next) => {
   const dbUser = await User.findByPk(req.user.id)
@@ -17,6 +36,7 @@ const corsRoute = (req, res, next) => {
 
 
 module.exports = {
+  isLoggedIn,
   isAdmin,
   corsRoute
 }

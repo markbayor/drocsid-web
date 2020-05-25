@@ -1,5 +1,4 @@
-import axios from 'axios'
-import socket from '../socket'
+import { AxiosHttpRequest } from '../utils'
 
 const defaultVal = {}
 
@@ -12,7 +11,7 @@ export const _sendMessage = (data) => ({ type: SEND_MESSAGE, data })
 
 export const getPopulatedChat = (chatId, partnerId) => async dispatch => {
   try {
-    const chat = (await axios.post('/api/chats/single/populated', { chatId, partnerId })).data
+    const chat = (await AxiosHttpRequest('POST', '/api/chats/single/populated', { chatId, partnerId })).data
     dispatch(_getChat(chat))
   } catch (ex) {
     console.log(ex)
@@ -21,9 +20,7 @@ export const getPopulatedChat = (chatId, partnerId) => async dispatch => {
 
 export const sendMessageToChat = (chatId, text, username) => async dispatch => {
   try {
-    const data = (await axios.post('/api/messages/new', { chatId, text, username })).data
-    console.log('THUNK', data)
-    socket.emit()
+    const data = (await AxiosHttpRequest('POST', '/api/messages/new', { chatId, text, username })).data
     return dispatch(_sendMessage(data))
   } catch (ex) {
     console.log(ex)

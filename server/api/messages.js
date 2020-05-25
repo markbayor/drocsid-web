@@ -1,7 +1,7 @@
 const router = require('express').Router()
 module.exports = router
 
-const { isAdmin } = require('../middleware')
+const { isLoggedIn } = require('../middleware')
 const { sendMessage } = require('./controllers/messages')
 
-router.post('/new', sendMessage)
+router.post('/new', isLoggedIn, sendMessage)
