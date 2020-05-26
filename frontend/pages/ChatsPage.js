@@ -17,7 +17,8 @@ const _ChatsPage = props => {
   useEffect(() => {
     props.loadAll()
     socket.on('message', ({ message, username }) => {
-      props.addMessage({ message, username })
+      if (message.userId !== props.user.id)
+        props.addMessage({ message, username })
     })
   }, [])
 
