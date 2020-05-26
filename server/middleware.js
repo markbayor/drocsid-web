@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken')
 
 const isLoggedIn = async (req, res, next) => {
   try {
-    console.log('HEADERS', req.headers)
     const authHeader = req.headers['authorization']
 
     if (!authHeader || !authHeader.split('Bearer ')[1]) return res.status(403).json({ message: 'Forbidden' });

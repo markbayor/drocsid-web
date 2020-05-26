@@ -67,7 +67,6 @@ export const getRequests = () => async dispatch => {
 export const acceptRequest = (id) => async dispatch => {
   try {
     const friend = (await AxiosHttpRequest('POST', '/api/friends/requests/accept', { requesterId: id })).data
-    console.log('FRIEND IN THUNK', friend)
     return dispatch(_acceptRequest(friend))
   } catch (ex) {
     console.log(ex)
