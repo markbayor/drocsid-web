@@ -27,7 +27,7 @@ const getUserChats = async (req, res, next) => {
 
 const getUserChatsWithMessages = async (req, res, next) => {
   try {
-    const myChats = await Chat.findAll({ where: { userIds: { [Op.iLike]: `%${req.user.id}%` } }, include: [{ model: Message, limit: 50 }, { model: User }] }) //TODO ADD OFFSET TO GET OLDER MESSAGES
+    const myChats = await Chat.findAll({ where: { userIds: { [Op.iLike]: `%${req.user.id}%` } }, include: [{ model: Message, limit: 50, include: [{ model: User, attributes: ['id', 'username', 'email'] }] }, { model: User, attributes: ['id', 'username', 'email'] }] }) //TODO ADD OFFSET TO GET OLDER MESSAGES
     let copy = myChats.slice()
     // SORTING MESSAGES HERE... NOT GOOD. TODO.
     copy.forEach(chat => chat.messages = chat.messages.sort((a, b) => a.updatedAt - b.updatedAt))
@@ -146,7 +146,7 @@ const deleteTwoPersonChat = async (req, res, next) => {
     await chat.destroy()
     await messages.forEach(message => message.destroy())
 
-    res.status(204).json({ message: 'Deleted' })
+    res.status(204).json({ chatId: chat.id })
   } catch (ex) {
     console.log(ex)
     next(ex)
