@@ -11,7 +11,7 @@ export const Home = props => {
     <div>
       <h2>Welcome, {email}</h2>
       <h3>Go to your chatpage to start chatting with people!!!</h3>
-      <h4>Download the <a href='https://cdn-13.anonfiles.com/10oeme3ao5/0e656181-1590520778/drocsid-darwin-x64-1.0.0.zip'>desktop app</a></h4>
+      {/* <h4>Download the <a href='https://cdn-13.anonfiles.com/10oeme3ao5/0e656181-1590520778/drocsid-darwin-x64-1.0.0.zip'>desktop app for Mac</a></h4> */}
     </div>
   )
 }
