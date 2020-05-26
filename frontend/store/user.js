@@ -55,7 +55,6 @@ export const me = () => async dispatch => {
   let res
   try {
     res = await AxiosHttpRequest('GET', '/auth/me')
-    console.log('getting me', res.data)
     dispatch(getUser(res.data || defaultUser))
   } catch (err) {
     console.error(err)

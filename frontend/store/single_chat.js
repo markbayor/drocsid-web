@@ -34,8 +34,6 @@ export default function (state = defaultVal, action) {
       newState = action.chat
       return newState
     case SEND_MESSAGE:
-      action.data.message.user = {}
-      action.data.message.user.username = action.data.username
       newState.messages = [...newState.messages, action.data.message]
       return newState
     default:

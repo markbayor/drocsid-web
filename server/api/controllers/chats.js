@@ -50,11 +50,8 @@ const getTwoPersonChatWithMessages = async (req, res, next) => {
       const chat = await Chat.findOne({ where: { userIds: `${[userId, partnerId].sort().join('::')}` }, include: [{ model: Message, limit: 50, include: [{ model: User, attributes: ['username'] }] }, User] })
       // SORTS THEM HERE, GOTTA LOOK INTO IT WITH SOME SEQUELIZE METHOD 
       // TODO
-      console.log(chat)
       chat.messages = chat.messages.sort((a, b) => a.createdAt - b.createdAt)
       res.json(chat)
-
-
     }
   } catch (ex) {
     console.log(ex)

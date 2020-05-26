@@ -60,15 +60,12 @@ const acceptFriendRequest = async (req, res, next) => {
     // will come from clicking accept on a certain request
     const { requesterId } = req.body
     const requester = await User.findOne({ where: { id: requesterId }, attributes: ['id', 'email', 'username'] })
-    console.log('REQUESTER', requester)
     const [relation, reverseRelation] = await Promise.all([
       Friendship.findOne({ where: { userId: req.user.id, friendId: requesterId } }),
       Friendship.findOne({ where: { userId: requesterId, friendId: req.user.id } })
     ])
-    console.log('RELATIONS', [relation, reverseRelation])
     relation.confirmed = true
     reverseRelation.confirmed = true
-    console.log('RELATIONS AFTER', [relation, reverseRelation])
     await relation.save()
     await reverseRelation.save()
 
@@ -140,11 +137,9 @@ const searchUser = async (req, res, next) => {
     // first find the ones that contain it instead of all of them (?) DOABLE FOR SMALL USER DATABASE
     const results = await User.findAll({ attributes: ['id', 'email', 'username'] })
     // THEN FILTER THOSE EVER MORE  
-    console.log('RESULTS', results)
     const filterOptions = { threshold: 0.5, distance: 50, keys: ['username'] }
     const fuse = new Fuse(results, filterOptions)
     const result = fuse.search(req.body.searchVal).map(r => r.item)
-    console.log('RESULT', result)
     res.status(200).json(result)
   } catch (ex) {
     console.log(ex)

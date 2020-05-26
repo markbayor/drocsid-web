@@ -9,8 +9,9 @@ const sendMessage = async (req, res, next) => {
     // create the message with the text and with the id of the user that made it, and attach it to the chat through chatId
     const message = await Message.create({ userId: req.user.id, chatId, text: req.body.text })
     // save relation for easier retrieval later (?) TODO
-    socketServer().emit('message', { message, username: req.body.username })
-    res.status(200).json({ message, username: req.body.username })
+    const response = await Message.findOne({ where: { id: message.id }, include: [{ model: User, attributes: ['id', 'email', 'username'] }] })
+    socketServer().emit('message', { message: response })
+    res.status(200).json({ message: response })
   } catch (ex) {
     console.log(ex)
     next(ex)

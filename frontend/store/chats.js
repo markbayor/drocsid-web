@@ -74,8 +74,6 @@ export default function (state = defaultVal, action) {
       newState = action.chats
       return newState
     case ADD_MESSAGE_TO_CHATS:
-      action.data.message.user = {}
-      action.data.message.user.username = action.data.username
       const chatIdx = newState.findIndex(chat => chat.id === action.data.message.chatId)
       newState[chatIdx].messages = [...newState[chatIdx].messages, action.data.message]
       return newState
