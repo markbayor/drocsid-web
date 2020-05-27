@@ -36,7 +36,7 @@ const Navbar = ({ handleClick, isLoggedIn, loaded }) => {
       }
       {isLoggedIn && <Button type="primary" onClick={handleClick} icon={<LogoutOutlined />}>Log out</Button>}
       <div>
-        <h2 style={{ color: 'white' }}>Download <a href='https://cdn-02.anonfiles.com/X8X0n53eo8/feed5ae1-1590538726/DROCSID-darwin-x64-1.0.0.zip'>desktop app</a>(Mac)</h2>
+        <h2 style={{ color: 'white' }}>Download <a href='https://cdn-02.anonfiles.com/X8X0n53eo8/feed5ae1-1590538726/DROCSID-darwin-x64-1.0.0.zip'>desktop app</a> (Mac)</h2>
       </div>
     </Header>
   )
