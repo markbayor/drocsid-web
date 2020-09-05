@@ -95,7 +95,6 @@ async function bootApp() {
   await syncDb()
   await createApp()
   await startListening()
-
 }
 
 bootApp()

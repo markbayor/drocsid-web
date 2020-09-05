@@ -31,7 +31,7 @@ const ChatComponent = ({ user, single_chat, sendMessage, showSearch }) => {
   return (
     <Layout className="site-layout" style={{ marginLeft: 198 }}>
       <Header className="site-layout-background" style={{ color: 'white', zIndex: 1000, padding: 0, color: 'white', position: 'fixed', top: 64, right: 0, width: 'calc(100vw - 200px)' }}>
-        <h2>Chat with {single_chat.users && single_chat.users.filter(u => u.username !== user.username).map(u => u.username).join(', ')}</h2>
+        <h2 style={{ color: 'white' }}>Chat with {single_chat.users && single_chat.users.filter(u => u.username !== user.username).map(u => u.username).join(', ')}</h2>
       </Header>
       <Content style={{ margin: '90px 16px 65px ', overflow: 'initial', top: 0 }}>
         {showSearch ? <SearchComponent />
